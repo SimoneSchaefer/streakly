@@ -1,0 +1,8 @@
+{
+  "name": "weekly-goal",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "20f8786e"
+}
