@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/goals"></ion-back-button>
+    </ion-buttons>
+    ManageActivities
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="activities">
+    <ion-item *ngFor="let activity of activities">
+      <ion-label>{{activity.name}}</ion-label>
+      <!--<ion-button icon-start>
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>   -->   
+      <ion-button icon-start (click)="deleteActivity(activity)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+
+</ion-content>
+
+
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button [routerLink]="['/add-activity']" color="primary" icon-start>
+          <ion-icon name="add-circle"></ion-icon>
+          Add new Activity
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

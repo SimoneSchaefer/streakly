@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    Track Activity
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div padding>
+    <ng-container *ngIf="activities">
+      <form [formGroup]="form" (ngSubmit)="saveActivity()">
+        <ion-item>
+          <ion-label position="stacked">I have done...</ion-label>
+          <ion-select placeholder="Select Activity" formControlName="activity">
+            <ion-select-option *ngFor="let activity of activities" [value]="activity">{{activity.name}}</ion-select-option>
+          </ion-select> 
+        </ion-item>  
+        <ion-button type="submit" color="primary" icon-start [disabled]="form.invalid">
+          <ion-icon name="checkmark"></ion-icon>
+          Save Activity
+        </ion-button>
+      </form>
+    </ng-container>
+  </div>
+</ion-content>
+

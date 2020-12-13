@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    Goals
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="goals && activities">
+    <ion-item *ngFor="let goal of goals">
+      <ion-label>
+        {{activityNameForGoal(goal)}}
+        <ion-badge color="success">{{goal.timesPerWeek}}</ion-badge>
+      </ion-label>
+      <!--<ion-button icon-start>
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>   -->   
+      <ion-button icon-start (click)="deleteGoal(goal)" color="danger">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button [routerLink]="['/edit-goal']" color="primary" icon-start>
+          <ion-icon name="add-circle"></ion-icon>
+          Add goal
+        </ion-button>        
+        <ion-button [routerLink]="['/manage-activities']" color="primary" icon-start>
+          <ion-icon name="pen"></ion-icon>
+          Manage Activities
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
