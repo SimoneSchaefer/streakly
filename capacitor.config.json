@@ -1,6 +1,7 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "weekly-goal",
+  "appId": "de.streakly",
+  "appName": "streakly",
+  "linuxAndroidStudioPath": "/home/simone/Downloads/android-studio/bin/studio.sh",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

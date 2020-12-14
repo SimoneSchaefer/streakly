@@ -1,3 +1,3 @@
 export interface Serializable {
-    id: number;
+    id: string;
 }

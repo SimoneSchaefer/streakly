@@ -5,6 +5,13 @@
 </ion-header>
 
 <ion-content>
+  <ion-button icon-start (click)="resetEntries()" color="danger">
+    <ion-icon name="trash"></ion-icon>
+  </ion-button>
+
+  <ion-item *ngIf="streak !== undefined">
+    Your current streak: {{streak.count || 0}}
+  </ion-item>
   <ion-list lines="none" *ngIf="goals && entries">  
     <ion-item *ngFor="let goal of goals">
       <ion-label>

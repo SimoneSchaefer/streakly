@@ -24,7 +24,6 @@ export class TrackActivityPage implements OnInit, ViewWillEnter {
     });
   }
 
-
   ionViewWillEnter() {
     this.loadData();
   }
@@ -48,5 +47,4 @@ export class TrackActivityPage implements OnInit, ViewWillEnter {
   private get activity() {
     return this.form.controls['activity'];
   }
-
 }
