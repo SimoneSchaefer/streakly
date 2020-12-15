@@ -1,17 +1,26 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Weekly Goals</ion-title>
+    <ion-buttons slot="end">
+      <ion-button icon-start (click)="resetEntries()" color="danger">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>   
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-button icon-start (click)="resetEntries()" color="danger">
-    <ion-icon name="trash"></ion-icon>
-  </ion-button>
-
-  <ion-item *ngIf="streak !== undefined">
-    Your current streak: {{streak.count || 0}}
-  </ion-item>
+  <div class="streak-container" *ngIf="streak !== undefined">
+    <div class="quiz-medal">
+      <div class="quiz-medal__circle quiz-medal__circle--gold">
+        <span>
+          {{streak.count || 0}}
+        </span>
+      </div>
+      <div class="quiz-medal__ribbon quiz-medal__ribbon--left"></div>
+      <div class="quiz-medal__ribbon quiz-medal__ribbon--right"></div>
+    </div> 
+  </div>
   <ion-list *ngIf="goals && entries">  
     <ion-item *ngFor="let goal of goals">
       <ion-label>
@@ -46,10 +55,6 @@
 <ion-footer>
   <ion-toolbar>
       <ion-buttons slot="end">
-        <ion-button [routerLink]="['/track-activity']" color="primary" icon-start>
-          <ion-icon name="add-circle"></ion-icon>
-          Track Activity
-        </ion-button>
         <ion-button [routerLink]="['/goals']" icon-start>
           <ion-icon name="settings"></ion-icon>
           Manage Goals
