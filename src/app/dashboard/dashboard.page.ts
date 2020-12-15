@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StoreService } from '../store.service';
-import { ViewWillEnter } from '@ionic/angular';
+import { ViewWillEnter, AlertController } from '@ionic/angular';
 import { DiaryEntry } from '../models/diary-entry';
 import { Activity } from '../models/activity';
 import { Goal } from '../models/goal';
@@ -15,8 +15,9 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   goals: Goal[];
   activities: Activity[];
   streak: number;
+  expanded: Goal[] = [];
 
-  constructor(private storeService: StoreService) { }
+  constructor(private storeService: StoreService, private alertController: AlertController) { }
 
   ngOnInit() {
   }
@@ -25,8 +26,29 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     this.loadData();
   }
 
+  toggleGoal(goal: Goal) {
+    const expandedIndex = this.getExpandedIndex(goal);
+    if (expandedIndex >= 0) {
+      this.expanded.splice(expandedIndex, 1)
+    } else {
+      this.expanded.push(goal);
+    }
+  }
+
+  isExpanded(goal: Goal) {
+    return this.getExpandedIndex(goal) >= 0;
+  }
+
+  getExpandedIndex(goal: Goal) {
+    return this.expanded.findIndex(eg => eg.id === goal.id);
+  }
+
   activityNameForEntry(entry: DiaryEntry) {
     return this.activities.find(act => act.id === entry.activityId).name;
+  }
+
+  activityNameForId(activityId: string) {
+    return this.activities.find(act => act.id === activityId).name;
   }
 
   getCurrentCount(activityId: string) {
@@ -49,6 +71,37 @@ export class DashboardPage implements OnInit, ViewWillEnter {
 
   getGoal(activityId: string) {
     return this.goals.find((goal => goal.activityId === activityId));
+  }
+
+  async addDiaryEntry(activityId: string) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Add Entry',
+      message: `Have you done some ${this.activityNameForId(activityId)} today?`,
+      buttons: [
+        {
+          text: 'No 😔',
+          role: 'cancel',
+          cssClass: 'primary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Yes 😊',
+          cssClass: 'primary',
+          handler: async () => {
+            console.log('Confirm Okay');
+            const diaryEntry = new DiaryEntry();
+            diaryEntry.activityId = activityId;
+            diaryEntry.date = Date.now();
+            await this.storeService.addDiaryEntry(diaryEntry);
+            this.loadData();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async loadData() {

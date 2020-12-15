@@ -12,21 +12,29 @@
   <ion-item *ngIf="streak !== undefined">
     Your current streak: {{streak.count || 0}}
   </ion-item>
-  <ion-list lines="none" *ngIf="goals && entries">  
+  <ion-list *ngIf="goals && entries">  
     <ion-item *ngFor="let goal of goals">
       <ion-label>
-        {{ activityName(goal.activityId)}}
-        <ion-badge  [color]="getColor(goal.activityId)">
-          {{getCurrentCount(goal.activityId)}} / {{goal.timesPerWeek}}
-        </ion-badge>
-        <ion-list lines="none" >
-          <ion-item *ngFor="let entry of getEntries(goal.activityId)">
-            <ion-label>
+        <div class="flex">
+          <ion-title>
+            <div class="flex">
+              <ion-icon role="button" (click)="toggleGoal(goal)" [name]="isExpanded(goal) ? 'chevron-down-outline' : 'chevron-forward-outline'" class="padding-right"></ion-icon>
+              {{ activityName(goal.activityId)}}
+            </div>
+          </ion-title> 
+          <ion-button (click)="addDiaryEntry(goal.activityId)" icon-start  size="large" [color]="getColor(goal.activityId)" size="default">
+            {{getCurrentCount(goal.activityId)}} / {{goal.timesPerWeek}} &nbsp;
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <ion-list lines="none" *ngIf="isExpanded(goal)" >
+          <ion-item *ngFor="let entry of getEntries(goal.activityId)" class="day">
+            <ion-label color="medium">
               {{entry.date | date: 'EEEE'}}
             </ion-label>
-            <ion-button icon-start (click)="deleteEntry(entry)" color="danger">
+            <!--<ion-button icon-start (click)="deleteEntry(entry)" color="danger">
               <ion-icon name="trash"></ion-icon>
-            </ion-button>
+            </ion-button>-->
           </ion-item>
         </ion-list>
       </ion-label>
