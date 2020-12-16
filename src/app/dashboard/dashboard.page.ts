@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StoreService } from '../store.service';
-import { ViewWillEnter, AlertController } from '@ionic/angular';
+import { ViewWillEnter, AlertController, ModalController } from '@ionic/angular';
 import { DiaryEntry } from '../models/diary-entry';
-import { Activity } from '../models/activity';
 import { Goal } from '../models/goal';
+import { EditGoalComponent } from './edit-goal/edit-goal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,16 +13,36 @@ import { Goal } from '../models/goal';
 export class DashboardPage implements OnInit, ViewWillEnter {
   entries: {};
   goals: Goal[];
-  activities: Activity[];
   streak: number;
   expanded: Goal[] = [];
 
-  constructor(private storeService: StoreService, private alertController: AlertController) { }
+  constructor(
+    private storeService: StoreService, 
+    private alertController: AlertController,
+    private modalController: ModalController) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
+    this.loadData();
+  }
+
+  async addGoal() {
+    this.editGoal();
+  }
+
+
+  async editGoal(goal? : Goal) {
+    const modal = await this.modalController.create({
+      component: EditGoalComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        goal: goal
+      }
+    });
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
     this.loadData();
   }
 
@@ -44,23 +64,19 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   }
 
   activityNameForEntry(entry: DiaryEntry) {
-    return this.activities.find(act => act.id === entry.activityId).name;
+    return this.goals.find(goal => goal.id === entry.goalId).activityName;
   }
 
-  activityNameForId(activityId: string) {
-    return this.activities.find(act => act.id === activityId).name;
+  getCurrentCount(goal: Goal) {
+    return this.getEntries(goal.activityName).length;
   }
 
-  getCurrentCount(activityId: string) {
-    return this.getEntries(activityId).length;
+  getEntries(activityName: string) {
+    return this.entries[activityName] || [];
   }
 
-  getEntries(activityId: string) {
-    return this.entries[activityId] || [];
-  }
-
-  getColor(activityId: string) {
-    const percent = this.getCurrentCount(activityId) / this.getGoal(activityId).timesPerWeek * 100;
+  getColor(goal: Goal) {
+    const percent = this.getCurrentCount(goal) / goal.timesPerWeek * 100;
     if (percent < 50) {
       return 'danger';
     } else if (percent < 100) {
@@ -69,15 +85,11 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     return 'success';
   }
 
-  getGoal(activityId: string) {
-    return this.goals.find((goal => goal.activityId === activityId));
-  }
-
-  async addDiaryEntry(activityId: string) {
+  async addDiaryEntry(goal: Goal) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Add Entry',
-      message: `Have you done some ${this.activityNameForId(activityId)} today?`,
+      message: `Have you done some ${goal.activityName} today?`,
       buttons: [
         {
           text: 'No 😔',
@@ -92,7 +104,7 @@ export class DashboardPage implements OnInit, ViewWillEnter {
           handler: async () => {
             console.log('Confirm Okay');
             const diaryEntry = new DiaryEntry();
-            diaryEntry.activityId = activityId;
+            diaryEntry.goalId = goal.id;
             diaryEntry.date = Date.now();
             await this.storeService.addDiaryEntry(diaryEntry);
             this.loadData();
@@ -105,10 +117,12 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   }
 
   async loadData() {
-    this.activities = await this.storeService.getActivities();
     this.goals = await this.storeService.getGoals();
     this.entries = await this.storeService.getGroupedEntries();  
     this.streak = await this.storeService.getStreak();   
+
+    console.log("goals", this.goals);
+    console.log("entries", this.entries);
   }
 
   getWeekNumber(date: Date) {
@@ -128,13 +142,8 @@ export class DashboardPage implements OnInit, ViewWillEnter {
 
   async resetEntries() {
     await this.storeService.setEntries([]);
-    await this.storeService.setActivities([]);
     await this.storeService.setGoals([]);
     await this.storeService.resetStreak();
     this.loadData();
-  }
-
-  activityName(activityId: number) {
-    return this.activities.find(act => `${act.id}` === `${activityId}`).name;
   }
 }
