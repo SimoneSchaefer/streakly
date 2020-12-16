@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { EditGoalPage } from './edit-goal.page';
+import { EditGoalPage } from './edit-goal.component';
 
 describe('EditGoalPage', () => {
   let component: EditGoalPage;

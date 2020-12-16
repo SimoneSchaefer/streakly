@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Activity } from './models/activity';
+
 import { Goal } from './models/goal';
 import { Serializable } from './models/serializable';
 import { DiaryEntry } from './models/diary-entry';
@@ -14,6 +14,7 @@ export class StoreService {
   private readonly GOALS_KEY = 'weekly-goals/goals';
   private readonly ENTRIES_KEY = 'weekly-goals/entries';
   private readonly STREAK_KEY = 'weekly-goals/streak';
+  private readonly RECORD_KEY = 'weekly-goals/record';
 
   constructor(private storage: Storage) { }
 
@@ -63,12 +64,14 @@ export class StoreService {
 
   async getGroupedEntries() {
     const entries = await this.getEntries();
+    const goals = await this.getGoals();
+
     return entries.reduce((acc, entry: DiaryEntry) => {
-      const key = `${entry.activityId}`;
-      if (!acc[`${key}`]) {
-        acc[`${key}`] = [];
+      const activityName = goals.find(goal => goal.id === entry.goalId)?.activityName || "?";
+      if (!acc[activityName]) {
+        acc[activityName] = [];
       }
-      acc[`${key}`].push(entry);  
+      acc[activityName].push(entry);  
       return acc;
     }, {});
   }
@@ -79,12 +82,7 @@ export class StoreService {
   setGoals(entries: Goal[][]) {
     return this.storage.set(this.GOALS_KEY, entries);
   }
-  setActivities(entries: Activity[]) {
-    return this.storage.set(this.ACTIVITIES_KEY, entries);
-  }
-  deleteActivity(activity: Activity) {
-    return this.deleteItem(this.ACTIVITIES_KEY, activity.id);
-  }
+ 
   deleteEntry(entry: DiaryEntry) {
     return this.deleteItem(this.ENTRIES_KEY, entry.id);
   }
@@ -93,21 +91,15 @@ export class StoreService {
     return this.deleteItem(this.GOALS_KEY, goal.id);
   }
 
-  addActivity(activity: Activity) {
-    return this.addItem(activity, this.ACTIVITIES_KEY)
-  }
-
-  addGoal(goal: Goal) {
-    return this.addItem(goal, this.GOALS_KEY)
+  saveGoal(goal: Goal) {
+    return this.saveItem(goal, this.GOALS_KEY)
   }
 
   async allGoalsReached() {
     const goals = await this.getGoals();
     const entries = await this.getGroupedEntries();
-    console.log('entries', entries);
     for (let goal of goals) {
       const entriesForGoal = entries[goal.activityId] || [];
-      console.log('goal', goal, entriesForGoal);
       if (entriesForGoal.length < goal.timesPerWeek) {
         return false;
       }
@@ -117,7 +109,7 @@ export class StoreService {
 
   async addDiaryEntry(diaryEntry: DiaryEntry) {
     const allGoalsReachedBefore = await this.allGoalsReached();
-    const entries = await this.addItem(diaryEntry, this.ENTRIES_KEY);
+    const entries = await this.saveItem(diaryEntry, this.ENTRIES_KEY);
     const allGoalsReachedAfter = await this.allGoalsReached();
     if (!allGoalsReachedBefore && allGoalsReachedAfter) {
       this.increaseStreak();
@@ -152,12 +144,19 @@ export class StoreService {
     return items;
   }
 
-  private async addItem(item: Serializable, storeKey: string) {
-    if (!item.id) {
-      item.id = `id_${Math.random()}`;
-    }
+  private async saveItem(item: Serializable, storeKey: string) {
     const items = await this.getItems(storeKey);
-    items.push(item);
+    if (item.id)  {
+      console.log("")
+      const itemIndex = items.findIndex(existing => item.id === existing.id);
+      if (itemIndex >= 0) {
+        console.log("new item", itemIndex)
+        items[itemIndex] = item;
+      }
+    } else {
+      item.id = `id_${Math.random()}`;
+      items.push(item);
+    }
     await this.storage.set(storeKey, items);
     return items;
   }

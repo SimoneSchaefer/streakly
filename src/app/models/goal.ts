@@ -1,8 +1,7 @@
-import { Activity } from './activity';
 import { Serializable } from './serializable';
 
-export class Goal implements Serializable{
+export class Goal implements Serializable {
     id: string;
-    activityId: string;
+    activityName: string;
     timesPerWeek: number;
 }

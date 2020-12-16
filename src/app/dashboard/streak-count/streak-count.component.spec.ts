@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { GoalsPage } from './goals.page';
+import { StreakCountComponent } from './streak-count.component';
 
-describe('GoalsPage', () => {
-  let component: GoalsPage;
-  let fixture: ComponentFixture<GoalsPage>;
+describe('StreakCountComponent', () => {
+  let component: StreakCountComponent;
+  let fixture: ComponentFixture<StreakCountComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GoalsPage ],
+      declarations: [ StreakCountComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GoalsPage);
+    fixture = TestBed.createComponent(StreakCountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
