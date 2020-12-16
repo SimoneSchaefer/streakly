@@ -1,7 +1,7 @@
 {
   "appId": "de.streakly",
   "appName": "streakly",
-  "linuxAndroidStudioPath": "/home/simone/Downloads/android-studio/bin/studio.sh",
+  "linuxAndroidStudioPath": "/home/simone/Bin/android-studio-ide-201.6953283-linux/android-studio/bin/studio.sh",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

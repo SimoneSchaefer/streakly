@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Weekly Goals</ion-title>
+    <ion-title translate>app_name</ion-title>
     <ion-buttons slot="end">
-      <ion-button icon-start (click)="addGoal()" color="primary">
-        <ion-label>Add Goal</ion-label>
+      <ion-button icon-start size="large" (click)="addGoal()" color="primary">
+        <ion-label translate>dashboard.add_goal_button</ion-label>
         <ion-icon name="add-circle"></ion-icon>
       </ion-button>
       <ion-button icon-start (click)="resetEntries()" color="primary">
@@ -14,40 +14,60 @@
 </ion-header>
 
 <ion-content>
-  <div class="streak-container" *ngIf="streak !== undefined">
-    <app-streak-count [streakCount]="streak.count"></app-streak-count>
-  </div>
-  <ion-list *ngIf="goals && entries">  
-    <ion-item *ngFor="let goal of goals">
-      <ion-label>
-        <div class="flex">
-          <ion-title>
-            <div class="flex">
-              <ion-icon role="button" (click)="toggleGoal(goal)" [name]="isExpanded(goal) ? 'chevron-down-outline' : 'chevron-forward-outline'" class="padding-right"></ion-icon>
-              {{ goal.activityName}}
-            </div>
-          </ion-title> 
-          <ion-button (click)="addDiaryEntry(goal)" icon-start  size="large" [color]="getColor(goal)" size="default">
-            {{getCurrentCount(goal)}} / {{goal.timesPerWeek}} &nbsp;
-            <ion-icon name="add-circle-outline"></ion-icon>
-          </ion-button>
-          <ion-button icon-start size="default" (click)="editGoal(goal)" color="primary">
-            <ion-icon name="create-outline"></ion-icon>
-          </ion-button>
-        </div>
-        <ion-list lines="none" *ngIf="isExpanded(goal)" >
-          <ion-item *ngFor="let entry of getEntries(goal.activityName)" class="day">
-            <ion-label color="medium">
-              {{entry.date | date: 'EEEE'}}
-            </ion-label>
-            <!--<ion-button icon-start (click)="deleteEntry(entry)" color="danger">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>-->
-          </ion-item>
-        </ion-list>
-      </ion-label>
+  <ng-container *ngIf="!loading && goals.length === 0; else dashboard">
+    <div class="jumbotron">
+      <div>
+        <ion-note>
+          <ion-title translate>dashboard.no_goals_header</ion-title>
+        </ion-note>
       
-    </ion-item>
-  </ion-list>
+      </div>
+      <div>
+        <ion-note><div translate>dashboard.no_goals_subheader</div></ion-note>
+      </div>
+      
+    </div>
+
+  </ng-container>
+  <ng-template #dashboard>
+    <div class="streak-container" *ngIf="streak !== undefined">
+      <app-streak-count [streakCount]="streak.count"></app-streak-count>
+    </div>
+    <ion-list *ngIf="goals && entries">  
+      <ion-item *ngFor="let goal of goals">
+        <ion-label>
+          <div class="flex">
+            <ion-title>
+              <div class="flex">
+                <ion-icon role="button" (click)="toggleGoal(goal)" [name]="isExpanded(goal) ? 'chevron-down-outline' : 'chevron-forward-outline'" class="padding-right"></ion-icon>
+                {{ goal.activityName}}
+              </div>
+            </ion-title> 
+            <ion-button (click)="addDiaryEntry(goal)" icon-start  size="large" [color]="getColor(goal)" size="default">
+              {{getCurrentCount(goal)}} / {{goal.timesPerWeek}} &nbsp;
+              <ion-icon name="add-circle-outline"></ion-icon>
+            </ion-button>
+            <ion-button icon-start size="default" (click)="editGoal(goal)" fill="outline" color="primary">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button icon-start size="default" (click)="deleteGoal(goal)" fill="outline" color="danger">
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </div>
+          <ion-list lines="none" *ngIf="isExpanded(goal)" >
+            <ion-item *ngFor="let entry of getEntries(goal.activityName)" class="day">
+              <ion-label color="medium">
+                {{entry.date | date: 'EEEE'}}
+              </ion-label>
+              <!--<ion-button icon-start (click)="deleteEntry(entry)" color="danger">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>-->
+            </ion-item>
+          </ion-list>
+        </ion-label>      
+      </ion-item>
+    </ion-list>
+  </ng-template>
+  
 </ion-content>
 
