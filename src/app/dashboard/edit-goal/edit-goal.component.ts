@@ -18,7 +18,6 @@ export class EditGoalComponent implements OnInit {
   constructor(
     private storeService: StoreService, 
     private formBuilder: FormBuilder, 
-    private router: Router,
     private modalController: ModalController) { }
 
   ngOnInit() {
@@ -50,10 +49,13 @@ export class EditGoalComponent implements OnInit {
     const goal = this.goal || new Goal();
     goal.activityName = this.activity.value;
     goal.timesPerWeek = this.times.value;
-    console.log("saving goal", goal)
     this.storeService.saveGoal(goal).then(_goals => {
       this.dismiss();
     });
+  }
+
+  get translationPrefix (){
+    return `dashboard.${!!this.goal ? 'edit' : 'add'}.`;
   }
 
   private get activity() {

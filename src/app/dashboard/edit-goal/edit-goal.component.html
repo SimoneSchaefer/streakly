@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Add goal</ion-title>
+    <ion-title>{{translationPrefix + 'header' | translate}}</ion-title>
     <ion-buttons slot="end">
       <ion-button icon-start (click)="dismiss()" color="primary">
         <ion-icon name="close"></ion-icon>
@@ -15,7 +15,7 @@
     <ng-container *ngIf="goals">
       <form [formGroup]="form" (ngSubmit)="saveGoal()">
         <ion-item>
-          <ion-label position="stacked">I want to do... </ion-label>
+          <ion-label position="stacked">{{translationPrefix + 'activity_label' | translate}}</ion-label>
           <ion-input type="text" formControlName="activity"></ion-input>
         </ion-item> 
         <div class="form_error">
@@ -24,12 +24,12 @@
           </ng-container>
         </div>
         <ion-item>
-          <ion-label position="stacked">Times a week: </ion-label>
+          <ion-label position="stacked">{{translationPrefix + 'times_label' | translate}}</ion-label>
           <ion-input type="number" formControlName="number"></ion-input>
         </ion-item>
         <ion-button type="submit" color="primary" icon-start [disabled]="form.invalid">
           <ion-icon name="checkmark"></ion-icon>
-          Add new Goal
+          {{translationPrefix + 'save' | translate}}
         </ion-button>
       </form>
     </ng-container>

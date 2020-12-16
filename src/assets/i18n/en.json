@@ -1,0 +1,27 @@
+{
+    "app_name": "Streakly",
+    "dashboard" : {
+        "no_goals_header": "You haven't defined any goals yet.",
+        "no_goals_subheader": "Define your goals using the button on the top right to get started.",
+        "add_goal_button": "Add Goal",
+        "delete": {
+            "header": "Delete Goal",
+            "message": "Do you really want to delete this goal?",
+            "yes": "Yes, delete",
+            "no": "No, keep it"
+        },
+        "add": {
+            "header": "Add Goal",
+            "activity_label": "I want to...",
+            "times_label": "...times a week:",
+            "save": "Add Goal"
+        },
+        "edit": {
+            "header": "Edit Goal",
+            "activity_label": "I want to...",
+            "times_label": "...times a week:",
+            "save": "Update Goal"
+
+        }
+    }
+}

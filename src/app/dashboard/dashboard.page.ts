@@ -4,13 +4,14 @@ import { ViewWillEnter, AlertController, ModalController } from '@ionic/angular'
 import { DiaryEntry } from '../models/diary-entry';
 import { Goal } from '../models/goal';
 import { EditGoalComponent } from './edit-goal/edit-goal.component';
-
+import { TranslateService } from '@ngx-translate/core'; // add this
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit, ViewWillEnter {
+  loading = true;
   entries: {};
   goals: Goal[];
   streak: number;
@@ -19,9 +20,12 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   constructor(
     private storeService: StoreService, 
     private alertController: AlertController,
+    private translateService: TranslateService,
     private modalController: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.translateService.use("en");
+  }
 
   ionViewWillEnter() {
     this.loadData();
@@ -31,18 +35,16 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     this.editGoal();
   }
 
-
   async editGoal(goal? : Goal) {
     const modal = await this.modalController.create({
       component: EditGoalComponent,
-      cssClass: 'my-custom-class',
       componentProps: {
         goal: goal
       }
     });
     await modal.present();
 
-    const { data } = await modal.onWillDismiss();
+    await modal.onWillDismiss();
     this.loadData();
   }
 
@@ -85,24 +87,37 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     return 'success';
   }
 
+  async deleteGoal(goal: Goal) {
+    const alert = await this.alertController.create({
+      header: this.translateService.instant('dashboard.delete.header'),
+      message: this.translateService.instant('dashboard.delete.message'),
+      buttons: [
+        {
+          text: this.translateService.instant('dashboard.delete.no'),
+          role: 'cancel',
+        }, {
+          text: this.translateService.instant('dashboard.delete.yes'),
+          handler: async () => {
+            await this.storeService.deleteGoal(goal);
+            this.loadData();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   async addDiaryEntry(goal: Goal) {
     const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
       header: 'Add Entry',
       message: `Have you done some ${goal.activityName} today?`,
       buttons: [
         {
           text: 'No 😔',
           role: 'cancel',
-          cssClass: 'primary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
         }, {
           text: 'Yes 😊',
-          cssClass: 'primary',
           handler: async () => {
-            console.log('Confirm Okay');
             const diaryEntry = new DiaryEntry();
             diaryEntry.goalId = goal.id;
             diaryEntry.date = Date.now();
@@ -112,17 +127,15 @@ export class DashboardPage implements OnInit, ViewWillEnter {
         }
       ]
     });
-
     await alert.present();
   }
 
   async loadData() {
+    this.loading = true;
     this.goals = await this.storeService.getGoals();
     this.entries = await this.storeService.getGroupedEntries();  
     this.streak = await this.storeService.getStreak();   
-
-    console.log("goals", this.goals);
-    console.log("entries", this.entries);
+    this.loading = false;
   }
 
   getWeekNumber(date: Date) {
