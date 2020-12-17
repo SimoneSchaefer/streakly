@@ -6,35 +6,35 @@
         <ion-label translate>dashboard.add_goal_button</ion-label>
         <ion-icon name="add-circle"></ion-icon>
       </ion-button>
-      <ion-button icon-start (click)="resetEntries()" color="primary">
+      <!--<ion-button icon-start (click)="resetEntries()" color="primary">
         <ion-icon name="trash"></ion-icon>
-      </ion-button>
+      </ion-button>-->
     </ion-buttons>   
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="border-shadow">
   <ng-container *ngIf="!loading && goals.length === 0; else dashboard">
     <div class="jumbotron">
       <div>
         <ion-note>
           <ion-title translate>dashboard.no_goals_header</ion-title>
-        </ion-note>
-      
+        </ion-note>      
       </div>
       <div>
         <ion-note><div translate>dashboard.no_goals_subheader</div></ion-note>
-      </div>
-      
+      </div>      
     </div>
-
   </ng-container>
+
+
   <ng-template #dashboard>
-    <div class="streak-container" *ngIf="streak !== undefined">
-      <app-streak-count [streakCount]="streak.count"></app-streak-count>
-    </div>
-    <ion-list *ngIf="goals && entries">  
-      <ion-item *ngFor="let goal of goals">
+    <div class="streak-container flex-container" *ngIf="streak !== undefined">
+      <app-streak-count [streakCount]="record" label="dashboard.record"></app-streak-count>
+      <app-streak-count [streakCount]="streak.count" size="large" label="dashboard.streakcount"></app-streak-count>
+    </div>  
+    <ion-list *ngIf="goals && entries" [lines]="full" class="ion-border-top">  
+      <ion-item *ngFor="let goal of goals"  class="ion-no-padding">
         <ion-label>
           <div class="flex">
             <ion-title>
@@ -47,11 +47,14 @@
               {{getCurrentCount(goal)}} / {{goal.timesPerWeek}} &nbsp;
               <ion-icon name="add-circle-outline"></ion-icon>
             </ion-button>
-            <ion-button icon-start size="default" (click)="editGoal(goal)" fill="outline" color="primary">
+            <!--<ion-button icon-start size="default" (click)="editGoal(goal)" fill="outline" color="primary">
               <ion-icon name="create-outline"></ion-icon>
             </ion-button>
             <ion-button icon-start size="default" (click)="deleteGoal(goal)" fill="outline" color="danger">
               <ion-icon name="trash"></ion-icon>
+            </ion-button>-->
+            <ion-button icon-start size="default" color="light" (click)="showOption(goal)">
+              <ion-icon name="menu-outline"></ion-icon>
             </ion-button>
           </div>
           <ion-list lines="none" *ngIf="isExpanded(goal)" >

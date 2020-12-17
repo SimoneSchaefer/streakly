@@ -1,9 +1,16 @@
 {
     "app_name": "Streakly",
     "dashboard" : {
+        "record": "Record",
+        "streakcount": "Current Streak",
         "no_goals_header": "You haven't defined any goals yet.",
         "no_goals_subheader": "Define your goals using the button on the top right to get started.",
         "add_goal_button": "Add Goal",
+        "options": {
+            "header": "Options",
+            "delete": "Delete Goal",
+            "edit": "Edit Goal"
+        },
         "delete": {
             "header": "Delete Goal",
             "message": "Do you really want to delete this goal?",

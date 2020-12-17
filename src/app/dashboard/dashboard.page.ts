@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { StoreService } from '../store.service';
-import { ViewWillEnter, AlertController, ModalController } from '@ionic/angular';
+import { ViewWillEnter, AlertController, ModalController, ActionSheetController } from '@ionic/angular';
 import { DiaryEntry } from '../models/diary-entry';
 import { Goal } from '../models/goal';
 import { EditGoalComponent } from './edit-goal/edit-goal.component';
 import { TranslateService } from '@ngx-translate/core'; // add this
+import { Streak } from '../models/streak';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -14,14 +15,16 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   loading = true;
   entries: {};
   goals: Goal[];
-  streak: number;
+  streak: Streak;
+  record: number;
   expanded: Goal[] = [];
 
   constructor(
     private storeService: StoreService, 
     private alertController: AlertController,
     private translateService: TranslateService,
-    private modalController: ModalController) { }
+    private modalController: ModalController,
+    private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
     this.translateService.use("en");
@@ -87,6 +90,29 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     return 'success';
   }
 
+  async showOption(goal: Goal) {
+    const actionSheet = await this.actionSheetController.create({
+      header: this.translateService.instant('dashboard.options.header'),
+      buttons: [{
+        text: this.translateService.instant('dashboard.options.edit'),
+        role: 'destructive',
+        icon: 'create-outline',
+        handler: () => {
+          this.editGoal(goal);
+        }
+      },{
+        text: this.translateService.instant('dashboard.options.delete'),
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.deleteGoal(goal);
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
+
   async deleteGoal(goal: Goal) {
     const alert = await this.alertController.create({
       header: this.translateService.instant('dashboard.delete.header'),
@@ -135,6 +161,7 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     this.goals = await this.storeService.getGoals();
     this.entries = await this.storeService.getGroupedEntries();  
     this.streak = await this.storeService.getStreak();   
+    this.record = await this.storeService.getRecord();   
     this.loading = false;
   }
 

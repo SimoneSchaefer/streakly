@@ -51,6 +51,14 @@ export class StoreService {
     return this.storage.get(this.STREAK_KEY);
   }
 
+  async getRecord() {
+    const record = await this.storage.get(this.RECORD_KEY);
+    if (!record) {
+      this.storage.set(this.RECORD_KEY, 0)
+    };
+    return this.storage.get(this.RECORD_KEY);
+  }
+
   resetStreak() {
     this.storage.set(this.STREAK_KEY, 0);
   }
@@ -109,10 +117,15 @@ export class StoreService {
 
   async addDiaryEntry(diaryEntry: DiaryEntry) {
     const allGoalsReachedBefore = await this.allGoalsReached();
-    const entries = await this.saveItem(diaryEntry, this.ENTRIES_KEY);
+    await this.saveItem(diaryEntry, this.ENTRIES_KEY);
     const allGoalsReachedAfter = await this.allGoalsReached();
     if (!allGoalsReachedBefore && allGoalsReachedAfter) {
-      this.increaseStreak();
+      await this.increaseStreak();
+      const currentRecord = await this.getRecord();
+      const currentStreak = await this.getStreak();
+      if (currentStreak > currentRecord){
+        await this.storage.set(this.RECORD_KEY, currentStreak);
+      }
     }
     return Promise.resolve();
   }
