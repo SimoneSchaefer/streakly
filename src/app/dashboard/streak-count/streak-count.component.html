@@ -1,5 +1,5 @@
-<div class="quiz-medal">
-  <div class="quiz-medal__circle quiz-medal__circle--gold">
+<div class="quiz-medal" [ngClass]="size">
+  <div class="quiz-medal__circle" [ngClass]="'quiz-medal__circle--' + color">
     <span>
       {{streakCount || 0}}
     </span>
@@ -7,3 +7,4 @@
   <div class="quiz-medal__ribbon quiz-medal__ribbon--left"></div>
   <div class="quiz-medal__ribbon quiz-medal__ribbon--right"></div>
 </div> 
+<ion-text color="medium">{{label | translate}}</ion-text>

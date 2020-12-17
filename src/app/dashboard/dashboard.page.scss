@@ -2,6 +2,13 @@
     display: flex;
 }
 
+::ng-deep {
+    .item-native {
+        padding-left: 0 !important;
+        --padding-start: 0px;
+    }
+}
+
 .jumbotron{
     display: flex;
     flex-direction: column;
@@ -22,6 +29,7 @@
     padding-right: 0.5em;
 }
 
+
 .day {
     padding-left: 2em;
 }
@@ -32,12 +40,20 @@
     height: calc(100% - 1em);
 }
 
-.streak-container {
-    height: 200px;
+.padding-top {
+    padding-top: 20px;
+}
+
+.flex-container {
     display: flex;
     align-content: center;
     align-items: center;
     text-align: center;
-    justify-content: center;
+    justify-content: space-evenly;
+}
+
+.streak-container {
+    height: 200px;
+   
 }
 
