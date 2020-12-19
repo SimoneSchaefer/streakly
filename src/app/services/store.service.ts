@@ -32,11 +32,7 @@ export class StoreService {
 
   async resetStreakIfNeeded() {
     const streak = await this.getStreak();
-    const streakWeekNumber = this.utils.getWeekNumber(new Date(streak.lastComputation));
-    const currentWeekNumber = this.utils.getWeekNumber(new Date());
-
-    if (currentWeekNumber - streakWeekNumber >= 2) {
-      //last streak increase has been done over a week ago
+    if (this.utils.streakResetNeeded(streak)) {
       this.resetStreak(); 
     }
   }
@@ -86,18 +82,6 @@ export class StoreService {
     return this.persistService.addOrUpdateItemInList(this.GOALS_KEY, goal)
   }
 
-  async allGoalsReached() {
-    const goals = await this.getGoals();
-    const entries = await this.getGroupedEntries();
-
-    for (let goal of goals) {
-      const entriesForGoal = entries[goal.activityName] || [];
-      if (entriesForGoal.length < goal.timesPerWeek) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   async addDiaryEntry(diaryEntry: DiaryEntry) {
     const allGoalsReachedBefore = await this.allGoalsReached();
@@ -106,15 +90,24 @@ export class StoreService {
 
     if (!allGoalsReachedBefore && allGoalsReachedAfter) {
       await this.increaseStreak();
-      const currentRecord = await this.getRecord();
-      const currentStreak = await this.getStreak();
-      if (currentStreak > currentRecord){
-        await this.persistService.addOrUpdateItemInList(this.RECORD_KEY, currentStreak);
-      }
+      await this.updateRecordIfNeeded();
     }
     return Promise.resolve();
   }
 
+  async updateRecordIfNeeded() {
+    const currentRecord = await this.getRecord();
+    const currentStreak = await this.getStreak();
+    if (currentStreak.count > currentRecord){
+      await this.persistService.saveItem(this.RECORD_KEY, currentStreak.count);
+    }
+  }
+
+  async allGoalsReached() {
+    const goals = await this.getGoals();
+    const entries = await this.getEntries();
+    return this.utils.allGoalsReached(entries, goals);
+  }
 
   private async cleanEntries() {
     const entries = await this.persistService.getItems(this.ENTRIES_KEY);

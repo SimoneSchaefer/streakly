@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DiaryEntry } from '../models/diary-entry';
 import { Goal } from '../models/goal';
+import { Streak } from '../models/streak';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +47,23 @@ export class UtilsService {
       }
     }
     return cleanEntries;
+  }
+
+  streakResetNeeded(currentStreak: Streak) {
+    const streakWeekNumber = this.getWeekNumber(new Date(currentStreak.lastComputation));
+    const currentWeekNumber = this.getWeekNumber(new Date());
+    return (currentWeekNumber - streakWeekNumber) > 1;
+  }
+
+
+  allGoalsReached(entries: DiaryEntry[], goals: Goal[]) {
+    const groupedEntries = this.groupEntries(entries, goals);
+    for (let goal of goals) {
+      const entriesForGoal = groupedEntries[goal.activityName] || [];
+      if (entriesForGoal.length < goal.timesPerWeek) {
+        return false;
+      }
+    }
+    return true;
   }
 }
