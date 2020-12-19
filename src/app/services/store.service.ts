@@ -11,7 +11,6 @@ import { PersistService } from './persist.service';
   providedIn: 'root'
 })
 export class StoreService {
-  private readonly ACTIVITIES_KEY = 'weekly-goals/activities';
   private readonly GOALS_KEY = 'weekly-goals/goals';
   private readonly ENTRIES_KEY = 'weekly-goals/entries';
   private readonly STREAK_KEY = 'weekly-goals/streak';
@@ -21,10 +20,6 @@ export class StoreService {
     private dateUtils: DateUtilsService,
     private persistService : PersistService
   ) { }
-
-  getActivities() {
-    return this.persistService.getItems(this.ACTIVITIES_KEY);;
-  }
 
   getGoals() {
     return this.persistService.getItems(this.GOALS_KEY);
@@ -64,6 +59,7 @@ export class StoreService {
     const streak = await this.getStreak();
     streak.count = streak.count + 1;
     streak.lastComputation = Date.now();
+    console.log('increase streak', streak);
     return this.persistService.saveItem(this.STREAK_KEY, streak);
   }
 
@@ -104,8 +100,9 @@ export class StoreService {
   async allGoalsReached() {
     const goals = await this.getGoals();
     const entries = await this.getGroupedEntries();
+
     for (let goal of goals) {
-      const entriesForGoal = entries[goal.activityId] || [];
+      const entriesForGoal = entries[goal.activityName] || [];
       if (entriesForGoal.length < goal.timesPerWeek) {
         return false;
       }
@@ -117,6 +114,8 @@ export class StoreService {
     const allGoalsReachedBefore = await this.allGoalsReached();
     await this.persistService.addOrUpdateItemInList(this.ENTRIES_KEY, diaryEntry);
     const allGoalsReachedAfter = await this.allGoalsReached();
+
+    console.log('before vs after', allGoalsReachedBefore, allGoalsReachedAfter);
     if (!allGoalsReachedBefore && allGoalsReachedAfter) {
       await this.increaseStreak();
       const currentRecord = await this.getRecord();
