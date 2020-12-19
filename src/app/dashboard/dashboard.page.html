@@ -31,7 +31,7 @@
       <app-streak-count *ngIf="record > streak.count" [streakCount]="record" label="dashboard.record"></app-streak-count>
       <app-streak-count [streakCount]="streak.count" size="large" label="dashboard.streakcount"></app-streak-count>
     </div>  
-    <ion-list *ngIf="goals && entries" [lines]="full" class="ion-border-top">  
+    <ion-list *ngIf="goals && entries" lines="full" class="ion-border-top">  
       <ion-item *ngFor="let goal of goals"  class="ion-no-padding">
         <ion-label>
           <div class="flex">
