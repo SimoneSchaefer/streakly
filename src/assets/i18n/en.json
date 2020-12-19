@@ -22,13 +22,33 @@
             "header": "Add Goal",
             "activity_label": "I want to...",
             "times_label": "...times a week:",
-            "save": "Add Goal"
+            "save": "Add Goal",
+            "errors": {
+                "activity": {
+                    "required": "Please enter an activity name",
+                    "conflict": "You already have a goal for that activity"   
+                },  
+                "times": {
+                    "required": "Please enter the amount of activities per week",
+                    "min": "Must be greater than Zero"   
+                }
+            }
         },
         "edit": {
             "header": "Edit Goal",
-            "activity_label": "I want to...",
+            "activity_label": "I want to do...",
             "times_label": "...times a week:",
-            "save": "Update Goal"
+            "save": "Update Goal",
+            "errors": {
+                "activity": {
+                    "required": "Please enter an activity name",
+                    "conflict": "You already have a goal for that activity"   
+                }, 
+                "times": {
+                    "required": "Please enter the amount of activities per week",
+                    "min": "Must be greater than Zero"   
+                }
+            }
 
         }
     }
