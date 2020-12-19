@@ -54,18 +54,15 @@ export class EditGoalComponent implements OnInit {
     });
   }
 
-  bla() {
-    return JSON.stringify(this.activity.errors);
-  }
-
   get translationPrefix (){
     return `dashboard.${!!this.goal ? 'edit' : 'add'}.`;
   }
 
-  private get activity() {
+  get activity() {
     return this.form.controls['activity'];
   }
-  private get times() {
+  
+  get times() {
     return this.form.controls['number'];
   }
 }
