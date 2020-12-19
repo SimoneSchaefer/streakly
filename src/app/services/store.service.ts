@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { Goal } from '../models/goal';
-import { Serializable } from '../models/serializable';
 import { DiaryEntry } from '../models/diary-entry';
 import { Streak } from '../models/streak';
-import { DateUtilsService } from './date-utils.service';
+import { UtilsService } from './utils.service';
 import { PersistService } from './persist.service';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class StoreService {
   private readonly RECORD_KEY = 'weekly-goals/record';
 
   constructor(
-    private dateUtils: DateUtilsService,
+    private utils: UtilsService,
     private persistService : PersistService
   ) { }
 
@@ -33,8 +32,8 @@ export class StoreService {
 
   async resetStreakIfNeeded() {
     const streak = await this.getStreak();
-    const streakWeekNumber = this.dateUtils.getWeekNumber(new Date(streak.lastComputation));
-    const currentWeekNumber = this.dateUtils.getWeekNumber(new Date());
+    const streakWeekNumber = this.utils.getWeekNumber(new Date(streak.lastComputation));
+    const currentWeekNumber = this.utils.getWeekNumber(new Date());
 
     if (currentWeekNumber - streakWeekNumber >= 2) {
       //last streak increase has been done over a week ago
@@ -47,7 +46,6 @@ export class StoreService {
   }
 
   resetStreak() {
-    // TODO this will add streak to a listrrrrrr
     this.persistService.saveItem(this.STREAK_KEY, new Streak());
   }
 
@@ -59,22 +57,13 @@ export class StoreService {
     const streak = await this.getStreak();
     streak.count = streak.count + 1;
     streak.lastComputation = Date.now();
-    console.log('increase streak', streak);
     return this.persistService.saveItem(this.STREAK_KEY, streak);
   }
 
   async getGroupedEntries() {
     const entries = await this.getEntries();
     const goals = await this.getGoals();
-
-    return entries.reduce((acc, entry: DiaryEntry) => {
-      const activityName = goals.find(goal => goal.id === entry.goalId)?.activityName || "?";
-      if (!acc[activityName]) {
-        acc[activityName] = [];
-      }
-      acc[activityName].push(entry);  
-      return acc;
-    }, {});
+    return this.utils.groupEntries(entries, goals);
   }
 
   setEntries(entries: DiaryEntry[]) {
@@ -115,7 +104,6 @@ export class StoreService {
     await this.persistService.addOrUpdateItemInList(this.ENTRIES_KEY, diaryEntry);
     const allGoalsReachedAfter = await this.allGoalsReached();
 
-    console.log('before vs after', allGoalsReachedBefore, allGoalsReachedAfter);
     if (!allGoalsReachedBefore && allGoalsReachedAfter) {
       await this.increaseStreak();
       const currentRecord = await this.getRecord();
@@ -130,14 +118,7 @@ export class StoreService {
 
   private async cleanEntries() {
     const entries = await this.persistService.getItems(this.ENTRIES_KEY);
-    const cleanEntries = [];
-    const currentWeekNumber = this.dateUtils.getWeekNumber(new Date());
-    for (let entry of entries) {
-      const isCurrentWeek = currentWeekNumber === this.dateUtils.getWeekNumber(new Date(entry.date));
-      if (isCurrentWeek) {
-        cleanEntries.push(entry);
-      }
-    }
-    return this.setEntries(cleanEntries);
+    const cleanedEntries = this.utils.removeOutdatedEntries(entries);
+    return this.setEntries(cleanedEntries);
   }
 }
