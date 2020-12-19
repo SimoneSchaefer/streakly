@@ -27,7 +27,7 @@
         </div>
         <ion-item class="padding-top">
           <ion-label position="floating">{{translationPrefix + 'times_label' | translate}}</ion-label>
-          <ion-input type="number" formControlName="number"></ion-input>
+          <ion-input id="times" type="number" formControlName="number"></ion-input>
         </ion-item>
         <div class="form_error">
           <ng-container *ngIf="times.invalid && (times.dirty || times.touched)">
