@@ -23,7 +23,7 @@ export class EditGoalComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       activity: new FormControl(!!this.goal ? this.goal.activityName : '', Validators.required),
-      number: new FormControl(!!this.goal ? this.goal.timesPerWeek : '', Validators.required)
+      number: new FormControl(!!this.goal ? this.goal.timesPerWeek : '', [Validators.required, Validators.min(1)])
     });
   }
 
@@ -54,6 +54,10 @@ export class EditGoalComponent implements OnInit {
     });
   }
 
+  bla() {
+    return JSON.stringify(this.activity.errors);
+  }
+
   get translationPrefix (){
     return `dashboard.${!!this.goal ? 'edit' : 'add'}.`;
   }
@@ -73,5 +77,15 @@ export function alreadyTakenValidator(goals: Goal[], currentGoal: Goal): Validat
       return null;
     }
     return forbidden ? {conflict: { value: control.value} } : null;
+  };
+}
+
+export function atLeast1(): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    console.log("at least 1 ---", control.value);
+    if (Number.parseInt(control.value) > 0) {
+      return null;
+    }
+    return {too_small: { value: control.value} };
   };
 }

@@ -15,19 +15,28 @@
     <ng-container *ngIf="goals">
       <form [formGroup]="form" (ngSubmit)="saveGoal()">
         <ion-item>
-          <ion-label position="stacked">{{translationPrefix + 'activity_label' | translate}}</ion-label>
-          <ion-input type="text" formControlName="activity"></ion-input>
+          <ion-label position="floating">{{translationPrefix + 'activity_label' | translate}}</ion-label>
+          <ion-input type="text" formControlName="activity" autofocus></ion-input>
         </ion-item> 
         <div class="form_error">
-          <ng-container *ngIf="form.touched && form.controls['activity'].errors">
-            {{form.controls['activity'].errors}}
+          <ng-container *ngIf="activity.invalid && (activity.dirty || activity.touched)">
+            <div *ngFor="let error of activity.errors | keyvalue">
+              {{translationPrefix +"errors.activity."+ error.key | translate}}
+            </div>
           </ng-container>
         </div>
-        <ion-item>
-          <ion-label position="stacked">{{translationPrefix + 'times_label' | translate}}</ion-label>
+        <ion-item class="padding-top">
+          <ion-label position="floating">{{translationPrefix + 'times_label' | translate}}</ion-label>
           <ion-input type="number" formControlName="number"></ion-input>
         </ion-item>
-        <ion-button type="submit" color="primary" icon-start [disabled]="form.invalid">
+        <div class="form_error">
+          <ng-container *ngIf="times.invalid && (times.dirty || times.touched)">
+            <div *ngFor="let error of times.errors | keyvalue">
+              {{translationPrefix +"errors.times."+ error.key | translate}}
+            </div>
+          </ng-container>
+        </div>
+        <ion-button class="margin-top" expand="full" size="large" type="submit" color="primary" icon-start [disabled]="form.invalid">
           <ion-icon name="checkmark"></ion-icon>
           {{translationPrefix + 'save' | translate}}
         </ion-button>

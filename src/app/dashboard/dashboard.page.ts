@@ -6,7 +6,7 @@ import { Goal } from '../models/goal';
 import { EditGoalComponent } from './edit-goal/edit-goal.component';
 import { TranslateService } from '@ngx-translate/core'; // add this
 import { Streak } from '../models/streak';
-import { UtilsService } from '../services/utils.service';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -137,6 +137,7 @@ export class DashboardPage implements OnInit, ViewWillEnter {
   async addDiaryEntry(goal: Goal) {
     const alert = await this.alertController.create({
       header: 'Add Entry',
+      cssClass: 'custom-form',
       message: `Have you done some ${goal.activityName} today?`,
       buttons: [
         {
@@ -162,7 +163,7 @@ export class DashboardPage implements OnInit, ViewWillEnter {
     this.goals = await this.storeService.getGoals();
     this.entries = await this.storeService.getGroupedEntries();  
     this.streak = await this.storeService.getStreak();   
-    this.record = await this.storeService.getRecord();   
+    this.record = await this.storeService.getRecord(); 
     this.loading = false;
   }
 
