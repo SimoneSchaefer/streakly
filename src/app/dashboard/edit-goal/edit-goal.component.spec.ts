@@ -1,19 +1,36 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { IonicStorageModule, Storage } from '@ionic/storage';
+import { TranslateModule } from '@ngx-translate/core';
+import { PersistService } from 'src/app/services/persist.service';
 
-import { EditGoalPage } from './edit-goal.component';
+import { EditGoalComponent } from './edit-goal.component';
 
-describe('EditGoalPage', () => {
-  let component: EditGoalPage;
-  let fixture: ComponentFixture<EditGoalPage>;
+describe('EditGoalComponent', () => {
+  let component: EditGoalComponent;
+  let fixture: ComponentFixture<EditGoalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditGoalPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ 
+        EditGoalComponent,
+      ],
+      imports: [
+        IonicModule.forRoot(),
+        IonicStorageModule.forRoot({
+          name: '__mydb',
+          driverOrder: ['localstorage']
+        }),
+        ReactiveFormsModule,
+        TranslateModule.forRoot() 
+      ],
+      providers: [
+        PersistService
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EditGoalPage);
+    fixture = TestBed.createComponent(EditGoalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
