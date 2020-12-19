@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Streak } from '../models/streak';
 
 import { UtilsService } from './utils.service';
 
@@ -118,6 +119,84 @@ describe('UtilsService', () => {
         goalId: "goal1",
         date: now
       }]);
+    });
+  });
+
+  describe('streakResetNeeded', () => {
+
+    it('should return true if last streak has been more than a week ago', () => {
+      const streak = new Streak();
+      streak.lastComputation = new Date().setDate(new Date(streak.lastComputation).getDate() - 15)
+      expect(service.streakResetNeeded(streak)).toBe(true);     
+    });
+
+    it('should return false if last streak has been updated in this week', () => {
+      const streak = new Streak();
+      streak.lastComputation = new Date().setTime(streak.lastComputation - (5 * 24 * 60 * 60));
+      expect(service.streakResetNeeded(streak)).toBe(false);     
+    });
+  });
+
+  describe('allGoalsReached', () => {
+    it('should return true if all goals have been reached', () => {
+      const goals = [{
+        id: 'goal1',
+        activityName: 'Running',
+        timesPerWeek:3
+      },{
+        id: 'goal2',
+        activityName: 'Yoga',
+        timesPerWeek:1
+      },];
+
+      const now = Date.now();
+      const entries = [{
+        id: "entry1",
+        goalId: "goal1",
+        date: now
+      },{
+        id: "entry2",
+        goalId: "goal2",
+        date: now
+      }, {
+        id: "entry3",
+        goalId: "goal1",
+        date: now
+      }, {
+        id: "entry3",
+        goalId: "goal1",
+        date: now
+      }];
+
+      expect(service.allGoalsReached(entries, goals)).toBe(true);
+    });    
+    
+    it('should return false if goals have NOT been reached', () => {
+      const goals = [{
+        id: 'goal1',
+        activityName: 'Running',
+        timesPerWeek:3
+      },{
+        id: 'goal2',
+        activityName: 'Yoga',
+        timesPerWeek:1
+      },];
+
+      const now = Date.now();
+      const entries = [{
+        id: "entry1",
+        goalId: "goal1",
+        date: now
+      },{
+        id: "entry2",
+        goalId: "goal2",
+        date: now
+      }, {
+        id: "entry3",
+        goalId: "goal1",
+        date: now
+      }];
+      expect(service.allGoalsReached(entries, goals)).toBe(false);
     });
   });
 });
