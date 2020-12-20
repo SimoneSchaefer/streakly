@@ -6,9 +6,9 @@
         <ion-label translate>dashboard.add_goal_button</ion-label>
         <ion-icon name="add-circle"></ion-icon>
       </ion-button>
-      <ion-button icon-start (click)="resetEntries()" color="primary">
+    <!--<ion-button icon-start (click)="resetEntries()" color="primary">
         <ion-icon name="trash"></ion-icon>
-      </ion-button>
+      </ion-button>-->
     </ion-buttons>   
   </ion-toolbar>
 </ion-header>
@@ -16,12 +16,18 @@
 <ion-content class="border-shadow">
   <ng-container *ngIf="!loading && goals.length === 0; else dashboard">
     <div class="jumbotron">
-      <ion-text>
-          <ion-title translate>dashboard.no_goals_header</ion-title>
+      <div>
+        <ion-text>
+          <ion-note>
+            <h4 translate>dashboard.no_goals_header</h4>
+          </ion-note>
       </ion-text>
-      <ion-text class="ion-padding">
-        <ion-note><div translate>dashboard.no_goals_subheader</div></ion-note>
-      </ion-text>      
+      </div>
+      <div>
+        <ion-text class="ion-padding">
+          <ion-note><div translate>dashboard.no_goals_subheader</div></ion-note>
+        </ion-text>  
+      </div>    
     </div>
   </ng-container>
 
