@@ -20,7 +20,7 @@
         },
         "add": {
             "header": "Add Goal",
-            "activity_label": "I want to...",
+            "activity_label": "I want to do...",
             "times_label": "...times a week:",
             "save": "Add Goal",
             "errors": {

@@ -21,10 +21,10 @@
 }
 
 .padding-top {
-    padding-top: 3em;
+    padding-top: 2em;
 }
 .margin-top {
-    margin-top: 3em;
+    margin-top: 2em;
 }
 
 
@@ -39,16 +39,15 @@ form {
             --border-color: red;
         }
 
-        /* Chrome, Safari, Edge, Opera */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+            /* display: none; <- Crashes Chrome on hover */
+            -webkit-appearance: none;
+            margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
         }
-
-        /* Firefox */
-        input[type=number] {
-        -moz-appearance: textfield;
+        
+        input[type=number].native-input {
+            -moz-appearance:textfield !important; /* Firefox */
         }
     }
 
