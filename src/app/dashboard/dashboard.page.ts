@@ -29,6 +29,7 @@ export class DashboardPage implements OnInit, ViewWillEnter {
 
   ngOnInit() {
     this.translateService.use("en");
+    this.loadData();
   }
 
   ionViewWillEnter() {
