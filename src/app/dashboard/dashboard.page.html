@@ -37,12 +37,12 @@
       <app-streak-count *ngIf="record > streak.count" [streakCount]="record" label="dashboard.record"></app-streak-count>
       <app-streak-count [streakCount]="streak.count" size="large" label="dashboard.streakcount"></app-streak-count>
     </div>  
-    <ion-list *ngIf="goals && entries" lines="full" class="ion-border-top">  
+    <ion-list *ngIf="goals" class="ion-border-top">  
       <ion-item *ngFor="let goal of goals"  class="ion-no-padding">
         <ion-label>
           <div class="flex">
             <ion-title>
-              <div class="flex">
+              <div class="flex" data-test="activityName">
                 <ion-icon role="button" (click)="toggleGoal(goal)" [name]="isExpanded(goal) ? 'chevron-down-outline' : 'chevron-forward-outline'" class="padding-right"></ion-icon>
                 {{ goal.activityName}}
               </div>
